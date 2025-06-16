@@ -41,8 +41,8 @@ A modern, feature-rich e-commerce shopping cart application built with React, fe
 
 1. **Clone the repository**
    \`\`\`bash
-   git clone https://github.com/yourusername/shopease-cart.git
-   cd shopease-cart
+   git clone https://github.com/satishrathod-dev/shopping-cart-react
+  -- cd shopease-cart
    \`\`\`
 
 2. **Install dependencies**
