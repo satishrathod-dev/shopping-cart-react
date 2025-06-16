@@ -1,3 +1,4 @@
+"use client"
 
 import { useEffect } from "react"
 import { Link, useLocation } from "react-router-dom"

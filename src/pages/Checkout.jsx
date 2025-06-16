@@ -2,14 +2,14 @@
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Check, CreditCard, Smartphone, Building, Truck, MapPin, Plus, Edit, Trash2 } from "lucide-react"
+import { Check, CreditCard, Smartphone, Building, Truck, MapPin, Plus, Edit, Trash2, Tag } from "lucide-react"
 import { useCart } from "../context/CartContext"
 import { useUser } from "../context/UserContext"
 import AddressForm from "../components/AddressForm"
 
 const Checkout = () => {
   const navigate = useNavigate()
-  const { items, getCartTotal, clearCart, coupon } = useCart()
+  const { items, getCartTotal, clearCart, coupon, applyCoupon, removeCoupon } = useCart()
   const {
     addresses,
     selectedAddress,
@@ -24,6 +24,9 @@ const Checkout = () => {
   const [showAddressForm, setShowAddressForm] = useState(false)
   const [editingAddress, setEditingAddress] = useState(null)
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
+
+  const [couponCode, setCouponCode] = useState("")
+  const [couponError, setCouponError] = useState("")
 
   const { subtotal, discount, platformFee, total } = getCartTotal()
 
@@ -40,13 +43,36 @@ const Checkout = () => {
     { id: "cod", name: "Cash on Delivery", icon: Truck },
   ]
 
+  // Add the coupon handler
+  const availableCoupons = [
+    { code: "SAVE10", discount: 10, minAmount: 100 },
+    { code: "WELCOME20", discount: 20, minAmount: 200 },
+    { code: "MEGA30", discount: 30, minAmount: 500 },
+  ]
+
+  const handleApplyCoupon = () => {
+    const foundCoupon = availableCoupons.find((c) => c.code === couponCode.toUpperCase())
+
+    if (!foundCoupon) {
+      setCouponError("Invalid coupon code")
+      return
+    }
+
+    if (subtotal < foundCoupon.minAmount) {
+      setCouponError(`Minimum order amount of $${foundCoupon.minAmount} required`)
+      return
+    }
+
+    applyCoupon(foundCoupon)
+    setCouponCode("")
+    setCouponError("")
+  }
+
   const handlePlaceOrder = async () => {
     setIsPlacingOrder(true)
 
-    // Simulate order processing
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    // Create order data
     const orderData = {
       items: items.map((item) => ({
         id: item.id,
@@ -64,7 +90,6 @@ const Checkout = () => {
       coupon: coupon,
     }
 
-    // Add order to user's order history
     const newOrder = addOrder(orderData)
 
     // Clear cart
@@ -285,6 +310,39 @@ const Checkout = () => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
+
+            {/* Coupon Section */}
+            <div className="mb-6">
+              <div className="flex space-x-2 mb-2">
+                <input
+                  type="text"
+                  placeholder="Enter coupon code"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                />
+                <button
+                  onClick={handleApplyCoupon}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
+                >
+                  Apply
+                </button>
+              </div>
+
+              {couponError && <p className="text-sm text-red-600">{couponError}</p>}
+
+              {coupon && (
+                <div className="flex items-center justify-between bg-green-50 p-3 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <Tag className="w-4 h-4 text-green-600" />
+                    <span className="text-sm font-medium text-green-800">{coupon.code} Applied</span>
+                  </div>
+                  <button onClick={removeCoupon} className="text-sm text-green-600 hover:text-green-800">
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
 
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-gray-600">
