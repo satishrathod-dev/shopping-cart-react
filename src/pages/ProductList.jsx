@@ -1,4 +1,3 @@
-"use client"
 import { Star, ShoppingCart } from "lucide-react"
 import { useCart } from "../context/CartContext"
 import { useState, useEffect } from "react"

@@ -1,4 +1,3 @@
-"use client"
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -19,6 +18,8 @@ const Checkout = () => {
     addOrder,
     deleteAddress,
   } = useUser()
+
+  console.log("addresses", addresses)
 
   const [currentStep, setCurrentStep] = useState(1)
   const [showAddressForm, setShowAddressForm] = useState(false)
@@ -71,32 +72,38 @@ const Checkout = () => {
   const handlePlaceOrder = async () => {
     setIsPlacingOrder(true)
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    const orderData = {
-      items: items.map((item) => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.image,
-      })),
-      address: selectedAddress,
-      paymentMethod: paymentMethod,
-      subtotal,
-      discount,
-      platformFee,
-      total,
-      coupon: coupon,
+      const orderData = {
+        items: items.map((item) => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+        })),
+        address: selectedAddress,
+        paymentMethod: paymentMethod,
+        subtotal,
+        discount,
+        platformFee,
+        total,
+        coupon: coupon,
+      }
+
+      const newOrder = addOrder(orderData)
+
+      clearCart()
+
+      navigate("/order-success", {
+        state: { orderId: newOrder.id },
+        replace: true,  // it will prevent back navigation
+      })
+    } catch (error) {
+      console.error("Error placing order:", error)
+      setIsPlacingOrder(false)
     }
-
-    const newOrder = addOrder(orderData)
-
-    // Clear cart
-    clearCart()
-
-    // Navigate to success page with order ID
-    navigate("/order-success", { state: { orderId: newOrder.id } })
   }
 
   const canProceedToNextStep = () => {
@@ -112,10 +119,10 @@ const Checkout = () => {
     }
   }
 
-  if (items.length === 0) {
-    navigate("/cart")
-    return null
-  }
+  // if (items.length === 0) {
+  //   navigate("/cart")
+  //   return null
+  // }
 
   return (
     <div className="max-w-6xl mx-auto">

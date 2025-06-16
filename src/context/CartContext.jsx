@@ -1,5 +1,3 @@
-"use client"
-
 import { createContext, useContext, useReducer, useEffect, useState } from "react"
 import { useUser } from "./UserContext"
 

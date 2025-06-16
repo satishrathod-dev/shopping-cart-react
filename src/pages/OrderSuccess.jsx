@@ -1,65 +1,116 @@
-"use client"
 
-import { useEffect } from "react"
-import { Link, useLocation } from "react-router-dom"
-import { CheckCircle, Package, Truck, Home, Eye } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { CheckCircle, Package, Truck, Home, Eye, ArrowRight } from "lucide-react"
 
 const OrderSuccess = () => {
   const location = useLocation()
+  const navigate = useNavigate()
+  const [showConfetti, setShowConfetti] = useState(false)
+
   const orderId = location.state?.orderId || `ORD${Date.now().toString().slice(-6)}`
   const estimatedDelivery = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString()
 
   useEffect(() => {
     // Scroll to top when component mounts
     window.scrollTo(0, 0)
-  }, [])
+
+    // Show confetti animation
+    setShowConfetti(true)
+    setTimeout(() => setShowConfetti(false), 3000)
+
+    // If no order state, redirect to products (shouldn't happen normally)
+    if (!location.state?.orderId) {
+      console.warn("No order ID found, user may have accessed page directly")
+    }
+  }, [location.state, navigate])
 
   return (
-    <div className="max-w-2xl mx-auto text-center py-16">
+    <div className="max-w-2xl mx-auto text-center py-16 relative">
+      {/* Confetti Animation */}
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none z-10">
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-500 animate-bounce"></div>
+          <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-green-500 animate-bounce delay-100"></div>
+          <div className="absolute top-1/2 left-1/3 w-2 h-2 bg-yellow-500 animate-bounce delay-200"></div>
+          <div className="absolute top-1/4 right-1/3 w-2 h-2 bg-purple-500 animate-bounce delay-300"></div>
+        </div>
+      )}
+
       <div className="mb-8">
-        <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Order Placed Successfully!</h1>
-        <p className="text-gray-600">Thank you for your purchase. Your order has been confirmed and saved.</p>
+        <div className="relative">
+          <CheckCircle className="w-24 h-24 text-green-500 mx-auto mb-4 animate-pulse" />
+          <div className="absolute inset-0 w-24 h-24 mx-auto rounded-full bg-green-100 animate-ping opacity-20"></div>
+        </div>
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">Order Placed Successfully! 🎉</h1>
+        <p className="text-xl text-gray-600">
+          Thank you for your purchase. Your order has been confirmed and is being processed.
+        </p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+      <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg shadow-sm p-8 mb-8 border border-blue-200">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">Order Details</h3>
-            <p className="text-gray-600">
-              Order ID: <span className="font-medium">{orderId}</span>
-            </p>
-            <p className="text-gray-600">
-              Order Date: <span className="font-medium">{new Date().toLocaleDateString()}</span>
-            </p>
+          <div className="space-y-3">
+            <h3 className="font-semibold text-gray-900 text-lg flex items-center">
+              <Package className="w-5 h-5 mr-2 text-blue-600" />
+              Order Details
+            </h3>
+            <div className="space-y-2">
+              <p className="text-gray-600">
+                Order ID:{" "}
+                <span className="font-mono font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">{orderId}</span>
+              </p>
+              <p className="text-gray-600">
+                Order Date:{" "}
+                <span className="font-medium">
+                  {new Date().toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">Delivery Information</h3>
-            <p className="text-gray-600">
-              Estimated Delivery: <span className="font-medium">{estimatedDelivery}</span>
-            </p>
-            <p className="text-gray-600">Tracking will be available soon</p>
+          <div className="space-y-3">
+            <h3 className="font-semibold text-gray-900 text-lg flex items-center">
+              <Truck className="w-5 h-5 mr-2 text-green-600" />
+              Delivery Information
+            </h3>
+            <div className="space-y-2">
+              <p className="text-gray-600">
+                Estimated Delivery: <span className="font-medium text-green-600">{estimatedDelivery}</span>
+              </p>
+              <p className="text-gray-600">Tracking information will be sent to your email</p>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="bg-blue-50 rounded-lg p-6 mb-8">
-        <h3 className="font-semibold text-gray-900 mb-4">What's Next?</h3>
+        <h3 className="font-semibold text-gray-900 mb-4 text-lg">What happens next?</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div className="flex flex-col items-center">
-            <Package className="w-8 h-8 text-blue-600 mb-2" />
-            <span className="font-medium">Order Processing</span>
-            <span className="text-gray-600">We're preparing your items</span>
+          <div className="flex flex-col items-center p-4 bg-white rounded-lg">
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+              <Package className="w-6 h-6 text-blue-600" />
+            </div>
+            <span className="font-medium text-gray-900">Order Processing</span>
+            <span className="text-gray-600 text-center mt-1">We're preparing your items for shipment</span>
           </div>
-          <div className="flex flex-col items-center">
-            <Truck className="w-8 h-8 text-blue-600 mb-2" />
-            <span className="font-medium">Shipped</span>
-            <span className="text-gray-600">Your order is on the way</span>
+          <div className="flex flex-col items-center p-4 bg-white rounded-lg">
+            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-3">
+              <Truck className="w-6 h-6 text-yellow-600" />
+            </div>
+            <span className="font-medium text-gray-900">Shipped</span>
+            <span className="text-gray-600 text-center mt-1">Your order is on the way to you</span>
           </div>
-          <div className="flex flex-col items-center">
-            <Home className="w-8 h-8 text-blue-600 mb-2" />
-            <span className="font-medium">Delivered</span>
-            <span className="text-gray-600">Enjoy your purchase!</span>
+          <div className="flex flex-col items-center p-4 bg-white rounded-lg">
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
+              <Home className="w-6 h-6 text-green-600" />
+            </div>
+            <span className="font-medium text-gray-900">Delivered</span>
+            <span className="text-gray-600 text-center mt-1">Enjoy your purchase!</span>
           </div>
         </div>
       </div>
@@ -68,23 +119,24 @@ const OrderSuccess = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/orders"
-            className="inline-flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            className="inline-flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-all transform hover:scale-105"
           >
             <Eye className="w-4 h-4" />
-            <span>View Order Details</span>
+            <span>Track Your Order</span>
           </Link>
           <Link
             to="/products"
-            className="inline-block border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-6 py-3 rounded-lg font-medium transition-all"
+            className="inline-flex items-center justify-center space-x-2 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-medium transition-all"
           >
-            Continue Shopping
+            <span>Continue Shopping</span>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
         <div>
           <p className="text-gray-600 text-sm">
             Need help? Contact our{" "}
-            <a href="#" className="text-blue-600 hover:text-blue-700">
-              customer support
+            <a href="#" className="text-blue-600 hover:text-blue-700 font-medium">
+              customer support team
             </a>
           </p>
         </div>
