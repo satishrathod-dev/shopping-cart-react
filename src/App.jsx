@@ -72,7 +72,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Catch all route - this is important for handling refreshes */}
+      {/* Catch all route - this is important for handling ((refreshes**)) */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
@@ -96,7 +96,6 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Only show header and cart notification when authenticated */}
       {isAuthenticated && (
         <>
           <Header />

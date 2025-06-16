@@ -63,10 +63,8 @@ const Register = () => {
 
     setIsLoading(true)
 
-    // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
-    // Mock successful registration - redirect to products
     login({
       id: Date.now(),
       email: formData.email,

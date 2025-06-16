@@ -1,7 +1,8 @@
+"use client"
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Check, CreditCard, Smartphone, Building, Truck, MapPin, Plus, Edit } from "lucide-react"
+import { Check, CreditCard, Smartphone, Building, Truck, MapPin, Plus, Edit, Trash2 } from "lucide-react"
 import { useCart } from "../context/CartContext"
 import { useUser } from "../context/UserContext"
 import AddressForm from "../components/AddressForm"
@@ -9,10 +10,19 @@ import AddressForm from "../components/AddressForm"
 const Checkout = () => {
   const navigate = useNavigate()
   const { items, getCartTotal, clearCart, coupon } = useCart()
-  const {  addresses, selectedAddress, setSelectedAddress, paymentMethod, setPaymentMethod, addOrder } = useUser()
+  const {
+    addresses,
+    selectedAddress,
+    setSelectedAddress,
+    paymentMethod,
+    setPaymentMethod,
+    addOrder,
+    deleteAddress,
+  } = useUser()
 
   const [currentStep, setCurrentStep] = useState(1)
   const [showAddressForm, setShowAddressForm] = useState(false)
+  const [editingAddress, setEditingAddress] = useState(null)
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
 
   const { subtotal, discount, platformFee, total } = getCartTotal()
@@ -126,7 +136,13 @@ const Checkout = () => {
 
               {showAddressForm && (
                 <div className="mb-6">
-                  <AddressForm onClose={() => setShowAddressForm(false)} />
+                  <AddressForm
+                    onClose={() => {
+                      setShowAddressForm(false)
+                      setEditingAddress(null)
+                    }}
+                    editAddress={editingAddress}
+                  />
                 </div>
               )}
 
@@ -155,9 +171,27 @@ const Checkout = () => {
                         </p>
                         <p className="text-gray-600 text-sm">{address.phone}</p>
                       </div>
-                      <button className="text-blue-600 hover:text-blue-700">
-                        <Edit className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setEditingAddress(address)
+                            setShowAddressForm(true)
+                          }}
+                          className="text-blue-600 hover:text-blue-700 p-1"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            deleteAddress(address.id)
+                          }}
+                          className="text-red-600 hover:text-red-700 p-1"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -235,7 +269,10 @@ const Checkout = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Payment Method</h2>
                 {paymentMethod && (
                   <div className="flex items-center space-x-3">
-                    <paymentMethod.icon className="w-5 h-5 text-gray-600" />
+                    {paymentMethod.id === "card" && <CreditCard className="w-5 h-5 text-gray-600" />}
+                    {paymentMethod.id === "upi" && <Smartphone className="w-5 h-5 text-gray-600" />}
+                    {paymentMethod.id === "netbanking" && <Building className="w-5 h-5 text-gray-600" />}
+                    {paymentMethod.id === "cod" && <Truck className="w-5 h-5 text-gray-600" />}
                     <span className="text-gray-900">{paymentMethod.name}</span>
                   </div>
                 )}

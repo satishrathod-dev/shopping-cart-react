@@ -83,7 +83,6 @@ const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const location = useLocation()
 
-  // Get search query from URL params
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search)
     const searchParam = urlParams.get("search")
@@ -119,10 +118,9 @@ const ProductList = () => {
 
   const handleAddToCart = (product) => {
     addToCart(product)
-    // Show cart drawer after adding item
     setTimeout(() => {
       setShowCartDrawer(true)
-    }, 500) // Small delay to let notification show first
+    }, 500) 
   }
 
   return (
@@ -196,7 +194,7 @@ const ProductList = () => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredProducts.map((product) => (
             <div
               key={product.id}

@@ -29,19 +29,19 @@ const LandingPage = () => {
 
   const testimonials = [
     {
-      name: "Sarah Johnson",
+      name: "Test User 1",
       role: "Verified Customer",
       content: "Amazing shopping experience! Fast delivery and excellent customer service.",
       rating: 5,
     },
     {
-      name: "Mike Chen",
+      name: "Test User 2",
       role: "Regular Customer",
       content: "Great product quality and competitive prices. Highly recommended!",
       rating: 5,
     },
     {
-      name: "Emily Davis",
+      name: "Test User 3",
       role: "Happy Shopper",
       content: "User-friendly interface and seamless checkout process. Love it!",
       rating: 5,
