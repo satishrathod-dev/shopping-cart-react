@@ -1,3 +1,4 @@
+"use client"
 
 import { useState } from "react"
 import { Link } from "react-router-dom"
@@ -40,8 +41,8 @@ const Cart = () => {
     return (
       <div className="text-center py-16">
         <ShoppingBag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <h2 className="text-2xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
-        <p className="text-gray-600 mb-6">Add some products to get started</p>
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Your cart is empty</h2>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">Add some products to get started</p>
         <Link
           to="/"
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
@@ -55,8 +56,8 @@ const Cart = () => {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Shopping Cart</h1>
-        <p className="text-gray-600">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Shopping Cart</h1>
+        <p className="text-gray-600 dark:text-gray-300">
           {items.length} item{items.length !== 1 ? "s" : ""} in your cart
         </p>
       </div>
@@ -64,7 +65,7 @@ const Cart = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
             {items.map((item, index) => (
               <div key={item.id} className={`p-6 ${index !== items.length - 1 ? "border-b" : ""}`}>
                 <div className="flex items-start space-x-4">
@@ -75,30 +76,34 @@ const Cart = () => {
                   />
 
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 mb-1">{item.name}</h3>
-                    <p className="text-sm text-gray-600 mb-2">{item.description}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{item.name}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{item.description}</p>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                          className="p-1 rounded-full hover:bg-gray-100 dark:bg-gray-700 transition-colors"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
 
-                        <span className="font-medium text-gray-900 min-w-[2rem] text-center">{item.quantity}</span>
+                        <span className="font-medium text-gray-900 dark:text-white min-w-[2rem] text-center">
+                          {item.quantity}
+                        </span>
 
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                          className="p-1 rounded-full hover:bg-gray-100 dark:bg-gray-700 transition-colors"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
                       </div>
 
                       <div className="flex items-center space-x-4">
-                        <span className="font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</span>
+                        <span className="font-semibold text-gray-900 dark:text-white">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </span>
 
                         <button
                           onClick={() => removeFromCart(item.id)}
@@ -117,8 +122,8 @@ const Cart = () => {
 
         {/* Order Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 sticky top-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Summary</h2>
 
             {/* Coupon Section */}
             <div className="mb-6">
@@ -128,11 +133,11 @@ const Cart = () => {
                   placeholder="Enter coupon code"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button
                   onClick={handleApplyCoupon}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors"
+                  className="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg font-medium transition-colors"
                 >
                   Apply
                 </button>
@@ -155,7 +160,7 @@ const Cart = () => {
 
             {/* Price Breakdown */}
             <div className="space-y-3 mb-6">
-              <div className="flex justify-between text-gray-600">
+              <div className="flex justify-between text-gray-600 dark:text-gray-300">
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
@@ -167,13 +172,13 @@ const Cart = () => {
                 </div>
               )}
 
-              <div className="flex justify-between text-gray-600">
+              <div className="flex justify-between text-gray-600 dark:text-gray-300">
                 <span>Platform Fee</span>
                 <span>${platformFee.toFixed(2)}</span>
               </div>
 
               <div className="border-t pt-3">
-                <div className="flex justify-between text-lg font-semibold text-gray-900">
+                <div className="flex justify-between text-lg font-semibold text-gray-900 dark:text-white">
                   <span>Total</span>
                   <span>${total.toFixed(2)}</span>
                 </div>

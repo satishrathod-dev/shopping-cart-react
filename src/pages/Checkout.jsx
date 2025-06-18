@@ -1,3 +1,4 @@
+"use client"
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -9,15 +10,8 @@ import AddressForm from "../components/AddressForm"
 const Checkout = () => {
   const navigate = useNavigate()
   const { items, getCartTotal, clearCart, coupon, applyCoupon, removeCoupon } = useCart()
-  const {
-    addresses,
-    selectedAddress,
-    setSelectedAddress,
-    paymentMethod,
-    setPaymentMethod,
-    addOrder,
-    deleteAddress,
-  } = useUser()
+  const { addresses, selectedAddress, setSelectedAddress, paymentMethod, setPaymentMethod, addOrder, deleteAddress } =
+    useUser()
 
   console.log("addresses", addresses)
 
@@ -98,7 +92,7 @@ const Checkout = () => {
 
       navigate("/order-success", {
         state: { orderId: newOrder.id },
-        replace: true,  // it will prevent back navigation
+        replace: true, // it will prevent back navigation
       })
     } catch (error) {
       console.error("Error placing order:", error)
@@ -119,10 +113,6 @@ const Checkout = () => {
     }
   }
 
-  // if (items.length === 0) {
-  //   navigate("/cart")
-  //   return null
-  // }
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -133,16 +123,26 @@ const Checkout = () => {
             <div key={step.id} className="flex items-center">
               <div
                 className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                  currentStep >= step.id ? "bg-blue-600 border-blue-600 text-white" : "border-gray-300 text-gray-400"
+                  currentStep >= step.id
+                    ? "bg-blue-600 border-blue-600 text-white"
+                    : "border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500"
                 }`}
               >
                 <step.icon className="w-5 h-5" />
               </div>
-              <span className={`ml-2 font-medium ${currentStep >= step.id ? "text-blue-600" : "text-gray-400"}`}>
+              <span
+                className={`ml-2 font-medium ${
+                  currentStep >= step.id ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-500"
+                }`}
+              >
                 {step.name}
               </span>
               {index < steps.length - 1 && (
-                <div className={`w-16 h-0.5 ml-4 ${currentStep > step.id ? "bg-blue-600" : "bg-gray-300"}`} />
+                <div
+                  className={`w-16 h-0.5 ml-4 ${
+                    currentStep > step.id ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-600"
+                  }`}
+                />
               )}
             </div>
           ))}
@@ -154,12 +154,12 @@ const Checkout = () => {
         <div className="lg:col-span-2">
           {/* Step 1: Address */}
           {currentStep === 1 && (
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border dark:border-gray-700">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Delivery Address</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Delivery Address</h2>
                 <button
                   onClick={() => setShowAddressForm(true)}
-                  className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
+                  className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add New Address</span>
@@ -184,24 +184,28 @@ const Checkout = () => {
                     key={address.id}
                     className={`border rounded-lg p-4 cursor-pointer transition-colors ${
                       selectedAddress?.id === address.id
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-gray-300"
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400"
+                        : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                     }`}
                     onClick={() => setSelectedAddress(address)}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <span className="font-medium text-gray-900">{address.name}</span>
-                          <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">{address.type}</span>
+                          <span className="font-medium text-gray-900 dark:text-white">{address.name}</span>
+                          <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded">
+                            {address.type}
+                          </span>
                           {address.isDefault && (
-                            <span className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">Default</span>
+                            <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-1 rounded">
+                              Default
+                            </span>
                           )}
                         </div>
-                        <p className="text-gray-600 text-sm">
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
                           {address.street}, {address.city}, {address.state} {address.zipCode}
                         </p>
-                        <p className="text-gray-600 text-sm">{address.phone}</p>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">{address.phone}</p>
                       </div>
                       <div className="flex items-center space-x-2">
                         <button
@@ -210,7 +214,7 @@ const Checkout = () => {
                             setEditingAddress(address)
                             setShowAddressForm(true)
                           }}
-                          className="text-blue-600 hover:text-blue-700 p-1"
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 p-1"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
@@ -219,7 +223,7 @@ const Checkout = () => {
                             e.stopPropagation()
                             deleteAddress(address.id)
                           }}
-                          className="text-red-600 hover:text-red-700 p-1"
+                          className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -233,8 +237,8 @@ const Checkout = () => {
 
           {/* Step 2: Payment */}
           {currentStep === 2 && (
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Payment Method</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border dark:border-gray-700">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Payment Method</h2>
 
               <div className="space-y-4">
                 {paymentMethods.map((method) => (
@@ -242,14 +246,14 @@ const Checkout = () => {
                     key={method.id}
                     className={`border rounded-lg p-4 cursor-pointer transition-colors ${
                       paymentMethod?.id === method.id
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-gray-300"
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400"
+                        : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                     }`}
                     onClick={() => setPaymentMethod(method)}
                   >
                     <div className="flex items-center space-x-3">
-                      <method.icon className="w-5 h-5 text-gray-600" />
-                      <span className="font-medium text-gray-900">{method.name}</span>
+                      <method.icon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                      <span className="font-medium text-gray-900 dark:text-white">{method.name}</span>
                     </div>
                   </div>
                 ))}
@@ -261,8 +265,8 @@ const Checkout = () => {
           {currentStep === 3 && (
             <div className="space-y-6">
               {/* Order Items */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Order Items</h2>
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border dark:border-gray-700">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Order Items</h2>
                 <div className="space-y-4">
                   {items.map((item) => (
                     <div key={item.id} className="flex items-center space-x-4">
@@ -272,40 +276,44 @@ const Checkout = () => {
                         className="w-16 h-16 object-cover rounded-lg"
                       />
                       <div className="flex-1">
-                        <h3 className="font-medium text-gray-900">{item.name}</h3>
-                        <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                        <h3 className="font-medium text-gray-900 dark:text-white">{item.name}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">Qty: {item.quantity}</p>
                       </div>
-                      <span className="font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</span>
+                      <span className="font-semibold text-gray-900 dark:text-white">
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Delivery Address */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Delivery Address</h2>
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border dark:border-gray-700">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Delivery Address</h2>
                 {selectedAddress && (
                   <div>
-                    <p className="font-medium text-gray-900">{selectedAddress.name}</p>
-                    <p className="text-gray-600">
+                    <p className="font-medium text-gray-900 dark:text-white">{selectedAddress.name}</p>
+                    <p className="text-gray-600 dark:text-gray-300">
                       {selectedAddress.street}, {selectedAddress.city}, {selectedAddress.state}{" "}
                       {selectedAddress.zipCode}
                     </p>
-                    <p className="text-gray-600">{selectedAddress.phone}</p>
+                    <p className="text-gray-600 dark:text-gray-300">{selectedAddress.phone}</p>
                   </div>
                 )}
               </div>
 
               {/* Payment Method */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Payment Method</h2>
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border dark:border-gray-700">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Payment Method</h2>
                 {paymentMethod && (
                   <div className="flex items-center space-x-3">
-                    {paymentMethod.id === "card" && <CreditCard className="w-5 h-5 text-gray-600" />}
-                    {paymentMethod.id === "upi" && <Smartphone className="w-5 h-5 text-gray-600" />}
-                    {paymentMethod.id === "netbanking" && <Building className="w-5 h-5 text-gray-600" />}
-                    {paymentMethod.id === "cod" && <Truck className="w-5 h-5 text-gray-600" />}
-                    <span className="text-gray-900">{paymentMethod.name}</span>
+                    {paymentMethod.id === "card" && <CreditCard className="w-5 h-5 text-gray-600 dark:text-gray-400" />}
+                    {paymentMethod.id === "upi" && <Smartphone className="w-5 h-5 text-gray-600 dark:text-gray-400" />}
+                    {paymentMethod.id === "netbanking" && (
+                      <Building className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                    )}
+                    {paymentMethod.id === "cod" && <Truck className="w-5 h-5 text-gray-600 dark:text-gray-400" />}
+                    <span className="text-gray-900 dark:text-white">{paymentMethod.name}</span>
                   </div>
                 )}
               </div>
@@ -315,8 +323,8 @@ const Checkout = () => {
 
         {/* Order Summary Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 sticky top-4 border dark:border-gray-700">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Summary</h2>
 
             {/* Coupon Section */}
             <div className="mb-6">
@@ -326,25 +334,30 @@ const Checkout = () => {
                   placeholder="Enter coupon code"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 />
                 <button
                   onClick={handleApplyCoupon}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
+                  className="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg font-medium transition-colors text-sm"
                 >
                   Apply
                 </button>
               </div>
 
-              {couponError && <p className="text-sm text-red-600">{couponError}</p>}
+              {couponError && <p className="text-sm text-red-600 dark:text-red-400">{couponError}</p>}
 
               {coupon && (
-                <div className="flex items-center justify-between bg-green-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 p-3 rounded-lg border dark:border-green-700">
                   <div className="flex items-center space-x-2">
-                    <Tag className="w-4 h-4 text-green-600" />
-                    <span className="text-sm font-medium text-green-800">{coupon.code} Applied</span>
+                    <Tag className="w-4 h-4 text-green-600 dark:text-green-400" />
+                    <span className="text-sm font-medium text-green-800 dark:text-green-300">
+                      {coupon.code} Applied
+                    </span>
                   </div>
-                  <button onClick={removeCoupon} className="text-sm text-green-600 hover:text-green-800">
+                  <button
+                    onClick={removeCoupon}
+                    className="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300"
+                  >
                     Remove
                   </button>
                 </div>
@@ -352,25 +365,25 @@ const Checkout = () => {
             </div>
 
             <div className="space-y-3 mb-6">
-              <div className="flex justify-between text-gray-600">
+              <div className="flex justify-between text-gray-600 dark:text-gray-300">
                 <span>Subtotal ({items.length} items)</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
 
               {discount > 0 && (
-                <div className="flex justify-between text-green-600">
+                <div className="flex justify-between text-green-600 dark:text-green-400">
                   <span>Discount</span>
                   <span>-${discount.toFixed(2)}</span>
                 </div>
               )}
 
-              <div className="flex justify-between text-gray-600">
+              <div className="flex justify-between text-gray-600 dark:text-gray-300">
                 <span>Platform Fee</span>
                 <span>${platformFee.toFixed(2)}</span>
               </div>
 
-              <div className="border-t pt-3">
-                <div className="flex justify-between text-lg font-semibold text-gray-900">
+              <div className="border-t dark:border-gray-600 pt-3">
+                <div className="flex justify-between text-lg font-semibold text-gray-900 dark:text-white">
                   <span>Total</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
@@ -398,7 +411,7 @@ const Checkout = () => {
             {currentStep > 1 && (
               <button
                 onClick={() => setCurrentStep(currentStep - 1)}
-                className="w-full text-center text-blue-600 hover:text-blue-700 py-2 block mt-3 transition-colors"
+                className="w-full text-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 py-2 block mt-3 transition-colors"
               >
                 Back
               </button>

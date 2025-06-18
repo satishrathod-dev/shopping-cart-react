@@ -1,7 +1,9 @@
+"use client"
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import { CartProvider } from "./context/CartContext"
 import { UserProvider } from "./context/UserContext"
+import { ThemeProvider } from "./context/ThemeContext"
 import { useUser } from "./context/UserContext"
 import Header from "./components/Header"
 import LandingPage from "./pages/LandingPage"
@@ -71,7 +73,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Catch all route - this is important for handling ((refreshes**)) */}
+      {/* Catch all route - this is important for handling refreshes */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
@@ -79,13 +81,15 @@ const AppRoutes = () => {
 
 function App() {
   return (
-    <UserProvider>
-      <CartProvider>
-        <Router basename="/">
-          <AppContent />
-        </Router>
-      </CartProvider>
-    </UserProvider>
+    <ThemeProvider>
+      <UserProvider>
+        <CartProvider>
+          <Router basename="/">
+            <AppContent />
+          </Router>
+        </CartProvider>
+      </UserProvider>
+    </ThemeProvider>
   )
 }
 
@@ -94,7 +98,7 @@ const AppContent = () => {
   const { isAuthenticated } = useUser()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       {isAuthenticated && (
         <>
           <Header />
